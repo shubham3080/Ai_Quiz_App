@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: 'hello@gmail.com',
+    password: 'hi',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -37,11 +37,12 @@ export default function LoginPage() {
           throw new Error('Login failed. Please try again.');
         }
       }
+      localStorage.setItem('token', data.token);
 
       router.push('/home');
       
     } catch (err: any) {
-      setError('Something went wrong during login. Please try again.');
+      setError(err.message || 'Something went wrong during login. Please try again.');
     } finally {
       setIsLoading(false);
     }
