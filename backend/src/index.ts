@@ -110,20 +110,26 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/categories", async (req, res) => {
-  const catogories = await ai.models.generateContent({
+app.post("/categories", async (req, res) => {
+  const { categoriesTitles } = req.body;
+  console.log(categoriesTitles);
+  const newCatogories = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: `
-    Generate exactly 10 diverse and popular quiz categories for an educational quiz app.
+    Generate exactly 30 diverse and popular quiz categories for an educational quiz app.
     Each category should be a broad field of knowledge (e.g., "Information Technology", "Art History").
     Each object must have: "name", "description", "trending" (boolean), "color" (string like "bg-blue-50").
     Return them as a JSON array of strings in the below format:
    [{"name": "Information Technology","description": "Master the digital world - from coding and cybersecurity to cloud computing and AI systems that power modern society.","trending": true},...]
+   Do NOT repeat any of the following categorie names: ${
+     categoriesTitles.length ? categoriesTitles.join(", ") : "none"
+   }.
+   give categories other than the above ones
     Do NOT wrap the response in markdown code blocks.
     Do NOT add any explanation, prefix, or suffix.
   `,
   });
-  const JsonResponse = catogories.text;
+  const JsonResponse = newCatogories.text;
   let response = [];
   if (JsonResponse) {
     response = JSON.parse(JsonResponse);
@@ -154,6 +160,44 @@ app.post("/categoriesBySearch", async (req, res) => {
     console.log(1, typeof response);
   }
   // console.log(response);
+  res.json({ response });
+});
+
+app.post("/subcategory", async (req, res) => {
+  const { category,existingSubcategories } = req.body;
+  const newSubCategories = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `
+  Generate exactly 10 diverse and relevant subcategories for the main quiz category: "${category}".
+  
+  Each subcategory should be a specific, well-defined topic within "${category}" 
+  (e.g., if parent is "Information Technology", valid subcategories include "React.js", "Node.js", "Cybersecurity", "Cloud Architecture").
+  
+  Each object must have:
+    - "name": short, clear title (e.g., "Machine Learning")
+    - "description": 1-sentence engaging explanation of what the subcategory covers
+    - "trending": boolean (true if currently popular or high-demand)
+    - "new" : boolean (true if the topic is recently introduced)
+    - "color": a Tailwind-compatible background color class like "bg-blue-50", "bg-green-50", etc. (use varied soft colors)
+
+  Return them as a JSON array of objects in this exact format:
+  [{"name":"...","description":"...","trending":true,,"new":true,"color":"..."}, ...]
+
+  Do NOT include any of the following subcategory names (avoid duplicates):
+  ${existingSubcategories.length ? existingSubcategories.join(", ") : "none"}
+
+  Do NOT wrap the response in markdown code blocks (no \`\`\`json).
+  Do NOT add any introduction, explanation, prefix, or suffix.
+  Return ONLY valid JSON.
+`,
+  });
+  const JsonResponse = newSubCategories.text;
+  let response = [];
+  if (JsonResponse) {
+    response = JSON.parse(JsonResponse);
+    console.log(1, typeof response);
+  }
+  console.log(response);
   res.json({ response });
 });
 

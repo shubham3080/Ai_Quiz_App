@@ -40,7 +40,7 @@
 
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CategoryCardComponent from "../_components/CategoryCardComponent";
 
 interface CategoryCardProps {
@@ -56,7 +56,94 @@ export default function Home() {
   const [categories, setCategories] = useState<CategoryCardProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const loadCategories = async () => {
+    const categoriesTitles = categories.map((item) => item.categoryTitle);
+    const res = await fetch("http://localhost:5000/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ categoriesTitles }),
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const result = await res.json();
+    // const fakeCategories = [
+    //     {
+    //         name: "Information Technology",
+    //         description: "Master the digital world - from coding and cybersecurity to cloud computing and AI systems that power modern society.",
+    //         trending: true,
+    //         color: "bg-blue-50"
+    //     },
+    //     {
+    //         name: "Medical Science",
+    //         description: "Explore the human body, diseases, treatments, and medical breakthroughs that save lives and advance healthcare.",
+    //         trending: true,
+    //         color: "bg-green-50"
+    //     },
+    //     {
+    //         name: "Painting & Fine Arts",
+    //         description: "Discover artistic masterpieces, techniques, and the stories behind the world's most celebrated paintings and artists.",
+    //         trending: false,
+    //         color: "bg-purple-50"
+    //     },
+    //     {
+    //         name: "Music Theory & History",
+    //         description: "From classical symphonies to modern hits - understand musical composition, genres, and legendary musicians.",
+    //         trending: false,
+    //         color: "bg-red-50"
+    //     },
+    //     {
+    //         name: "World History",
+    //         description:"",
+    //         // description: "Journey through ancient civilizations, world wars, and pivotal moments that shaped human civilization across continents.",
+    //         trending: true,
+    //         color: "bg-orange-50"
+    //     },
+    //     {
+    //         name: "Environmental Science",
+    //         description: "Understand our planet's ecosystems, climate change, conservation efforts, and sustainable living practices.",
+    //         trending: true,
+    //         color: "bg-teal-50"
+    //     },
+    //     {
+    //         name: "Business & Economics",
+    //         description: "Learn about markets, entrepreneurship, economic theories, and business strategies that drive global economies.",
+    //         trending: false,
+    //         color: "bg-indigo-50"
+    //     },
+    //     {
+    //         name: "Psychology & Human Behavior",
+    //         description: "Explore the human mind, behavior patterns, cognitive processes, and what makes us think and act the way we do.",
+    //         trending: true,
+    //         color: "bg-pink-50"
+    //     },
+    //     {
+    //         name: "Culinary Arts",
+    //         description: "From cooking techniques to world cuisines - master the art and science behind delicious food and culinary traditions.",
+    //         trending: false,
+    //         color: "bg-yellow-50"
+    //     },
+    //     {
+    //         name: "Space & Astronomy",
+    //         description: "Reach for the stars! Learn about planets, galaxies, space exploration, and the mysteries of our universe.",
+    //         trending: true,
+    //         color: "bg-gray-50"
+    //     }
+    // ];
+    const data = await result.response;
+    console.log(data);
+    [...data].map((item: any) => console.log(item));
+    const mappedCategories = [...data].map((item: any) => ({
+      categoryTitle: item.name || item.category || "Unknown Category",
+      description: item.description,
+      trending: item.trending || false,
+      color: item.color || "bg-white",
+      onArrowClick: () => console.log(`Clicked ${item.name}`),
+    }));
+    setCategories((prev) => [...prev, ...mappedCategories]);
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -70,86 +157,7 @@ export default function Home() {
         }
 
         setIsLoading(true);
-        const res = await fetch("http://localhost:5000/categories");
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const result = await res.json();
-        // const fakeCategories = [
-        //     {
-        //         name: "Information Technology",
-        //         description: "Master the digital world - from coding and cybersecurity to cloud computing and AI systems that power modern society.",
-        //         trending: true,
-        //         color: "bg-blue-50"
-        //     },
-        //     {
-        //         name: "Medical Science",
-        //         description: "Explore the human body, diseases, treatments, and medical breakthroughs that save lives and advance healthcare.",
-        //         trending: true,
-        //         color: "bg-green-50"
-        //     },
-        //     {
-        //         name: "Painting & Fine Arts",
-        //         description: "Discover artistic masterpieces, techniques, and the stories behind the world's most celebrated paintings and artists.",
-        //         trending: false,
-        //         color: "bg-purple-50"
-        //     },
-        //     {
-        //         name: "Music Theory & History",
-        //         description: "From classical symphonies to modern hits - understand musical composition, genres, and legendary musicians.",
-        //         trending: false,
-        //         color: "bg-red-50"
-        //     },
-        //     {
-        //         name: "World History",
-        //         description:"",
-        //         // description: "Journey through ancient civilizations, world wars, and pivotal moments that shaped human civilization across continents.",
-        //         trending: true,
-        //         color: "bg-orange-50"
-        //     },
-        //     {
-        //         name: "Environmental Science",
-        //         description: "Understand our planet's ecosystems, climate change, conservation efforts, and sustainable living practices.",
-        //         trending: true,
-        //         color: "bg-teal-50"
-        //     },
-        //     {
-        //         name: "Business & Economics",
-        //         description: "Learn about markets, entrepreneurship, economic theories, and business strategies that drive global economies.",
-        //         trending: false,
-        //         color: "bg-indigo-50"
-        //     },
-        //     {
-        //         name: "Psychology & Human Behavior",
-        //         description: "Explore the human mind, behavior patterns, cognitive processes, and what makes us think and act the way we do.",
-        //         trending: true,
-        //         color: "bg-pink-50"
-        //     },
-        //     {
-        //         name: "Culinary Arts",
-        //         description: "From cooking techniques to world cuisines - master the art and science behind delicious food and culinary traditions.",
-        //         trending: false,
-        //         color: "bg-yellow-50"
-        //     },
-        //     {
-        //         name: "Space & Astronomy",
-        //         description: "Reach for the stars! Learn about planets, galaxies, space exploration, and the mysteries of our universe.",
-        //         trending: true,
-        //         color: "bg-gray-50"
-        //     }
-        // ];
-        const data = await result.response;
-        console.log(data);
-        [...data].map((item: any) => console.log(item));
-        const mappedCategories = [...data].map((item: any) => ({
-          categoryTitle: item.name || item.category || "Unknown Category",
-          description: item.description,
-          trending: item.trending || false,
-          color: item.color || "bg-white",
-          onArrowClick: () => console.log(`Clicked ${item.name}`),
-        }));
-
-        setCategories(mappedCategories);
+        await loadCategories();
       } catch (error) {
         console.log("Failed to fetch categories:", error);
         // setCategories([]);
@@ -165,6 +173,27 @@ export default function Home() {
   useEffect(() => {
     console.log(categories);
   }, [categories]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoading) {
+          loadCategories();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (sentinelRef.current) {
+      observer.observe(sentinelRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isLoading, loadCategories]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -218,6 +247,8 @@ export default function Home() {
           )}
         </div>
       </header>
+      <div ref={sentinelRef} className="h-10" />
+      {isLoading ? <></> : <p>loading more...</p>}
     </div>
   );
 }
