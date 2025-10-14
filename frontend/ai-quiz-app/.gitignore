@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+CategoryClient.tsx
+page3.tsx 
+page2.tsx

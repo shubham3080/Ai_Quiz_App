@@ -160,9 +160,9 @@
 
 import { useState, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../../components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import SubcategoryCard from "../../_components/SubCategoryCard";
+import SubcategoryCard from "../../../_components/SubCategoryCard";
 
 interface Subcategory {
   id: string;
@@ -255,40 +255,7 @@ export default function CategoryClient({ initialCategories, categoryTitle }: Cat
       <div className="container mx-auto px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Left Sidebar */}
-          <div className="lg:w-1/4">
-            <div className="sticky top-8 space-y-8">
-              {/* Back Button */}
-              <Button 
-                variant="ghost" 
-                onClick={() => window.history.back()}
-                className="flex items-center gap-2 text-slate-600 hover:text-slate-900 pl-0 hover:bg-transparent"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Categories
-              </Button>
-
-              {/* Category Title & Description */}
-              <div className="space-y-6">
-                <div>
-                  <h1 className="text-4xl font-bold text-slate-900 mb-2 capitalize">
-                    {decodedCategoryTitle}
-                  </h1>
-                  <div className="w-16 h-1 bg-blue-500 rounded-full"></div>
-                </div>
-                
-                <div className="space-y-4">
-                  <p className="text-slate-700 text-base leading-relaxed">
-                    Explore specialized learning paths in {decodedCategoryTitle.toLowerCase()}. 
-                    Each subcategory represents a focused domain where you can test your expertise 
-                    through comprehensive assessments.
-                  </p>
-                  <p className="text-slate-600 text-sm leading-relaxed">
-                    Click on any subcategory to learn more and begin your assessment journey.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          
 
           {/* Right Content - Single Column Cards */}
           <div className="lg:w-3/4">
