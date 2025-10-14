@@ -37,12 +37,11 @@ export default function LoginPage() {
           throw new Error("Login failed. Please try again.");
         }
       }
-      console.log(data)
-      localStorage.setItem("token", data.token);
+      localStorage.setItem('token', data.token);
 
       router.push("/home");
     } catch (err: any) {
-      setError("Something went wrong during login. Please try again.");
+      setError(err.message || 'Something went wrong during login. Please try again.');
     } finally {
       setIsLoading(false);
     }

@@ -12,7 +12,7 @@ async function main() {
     Generate exactly 10 diverse and popular quiz categories for an educational quiz app.
     Each category should be a broad field of knowledge (e.g., "Information Technology", "Art History").
     Return them as a JSON array of strings, nothing else.
-    Example: ["Information Technology", "World Geography", "Classical Music"]
+    Example: [{name: "Information Technology",description: "Master the digital world - from coding and cybersecurity to cloud computing and AI systems that power modern society.",trending: true},...]
     Do NOT wrap the response in markdown code blocks.
     Do NOT add any explanation, prefix, or suffix.
     Catogories should start with painter or should be catogories related with painter

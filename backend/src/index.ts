@@ -11,6 +11,7 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+console.log("MongoDB URI:", process.env.MONGO_DB_URI);
 mongoose
   .connect(process.env.MONGO_DB_URI!)
   .then(() => console.log("Connected to MongoDB"))
@@ -115,13 +116,19 @@ app.get("/categories", async (req, res) => {
     contents: `
     Generate exactly 10 diverse and popular quiz categories for an educational quiz app.
     Each category should be a broad field of knowledge (e.g., "Information Technology", "Art History").
-    Return them as a JSON array of strings, nothing else.
-    Example: ["Information Technology", "World Geography", "Classical Music"]
+    Each object must have: "name", "description", "trending" (boolean), "color" (string like "bg-blue-50").
+    Return them as a JSON array of strings in the below format:
+   [{"name": "Information Technology","description": "Master the digital world - from coding and cybersecurity to cloud computing and AI systems that power modern society.","trending": true},...]
     Do NOT wrap the response in markdown code blocks.
     Do NOT add any explanation, prefix, or suffix.
   `,
   });
-  const response = catogories.text;
+  const JsonResponse = catogories.text;
+  let response = [];
+  if (JsonResponse) {
+    response = JSON.parse(JsonResponse);
+    console.log(1, typeof response);
+  }
   console.log(response);
   res.json({ response });
 });
@@ -140,8 +147,13 @@ app.post("/categoriesBySearch", async (req, res) => {
     Categories should start with ${search} or should be catogories related with ${search}
   `,
   });
-  const response = catogories.text;
-  console.log(response);
+  const JsonResponse = catogories.text;
+  let response = [];
+  if (JsonResponse) {
+    response = JSON.parse(JsonResponse);
+    console.log(1, typeof response);
+  }
+  // console.log(response);
   res.json({ response });
 });
 
