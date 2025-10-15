@@ -6,7 +6,7 @@ import { useInView } from "react-intersection-observer";
 import { Button } from "../../../../components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import SubcategoryCard from "../../../_components/SubCategoryCard";
-
+import { useRouter } from "next/navigation";
 interface Subcategory {
   id: string;
   name: string;
@@ -16,7 +16,13 @@ interface Subcategory {
   isNew?: boolean;
   color?: string;
 }
-
+interface QuizLandingData {
+  categoryTitle: string;
+  subcategoryTitle: string;
+  description: string;
+  questionsCount?: number;
+  timeLimit?: number;
+}
 
 async function fetchSubcategories(categoryTitle: string, existingSubcategories: string[] = []): Promise<Subcategory[]> {
   const res = await fetch("http://localhost:5000/subcategories", {
@@ -59,6 +65,7 @@ export default function CategoryClient({ params }: PageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const sentinelRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
 
   const { ref, inView } = useInView({
     threshold: 0,
@@ -170,9 +177,19 @@ export default function CategoryClient({ params }: PageProps) {
 
 
 
-  const handleStartTest = (subcategoryTitle: string) => {
-    console.log("Starting test for:", subcategoryTitle);
-    window.location.href = `/quiz?subcategory=${encodeURIComponent(subcategoryTitle)}`;
+  const handleStartTest = (subcategory: Subcategory) => {
+    console.log("Starting test for:", subcategory.name);
+    const quizData: QuizLandingData = {
+      categoryTitle: decodedCategoryTitle,
+      subcategoryTitle: subcategory.name,
+      description: `Test your knowledge in ${subcategory.description} with this comprehensive quiz.`,
+      questionsCount: 5,
+      // timeLimit: 20 
+    }
+    const quizId = `quiz_${Date.now()}`;
+    localStorage.setItem(quizId, JSON.stringify(quizData));
+    router.push(`/quiz/${quizId}`);
+   
   };
 
   const decodedCategoryTitle = decodeURIComponent(categoryTitle).replace(/-/g, ' ');
@@ -237,7 +254,7 @@ export default function CategoryClient({ params }: PageProps) {
                   trending={subcategory.trending}
                   isNew={subcategory.isNew}
                   color={subcategory.color || "bg-white"}
-                  onStartTest={() => handleStartTest(subcategory.name)}
+                  onStartTest={() => handleStartTest(subcategory)}
                 />
               ))}
             </div>

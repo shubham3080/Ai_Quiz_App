@@ -47,7 +47,7 @@ export default function Home() {
   };
   const loadMoreCategories = async () => {
     if (isLoadingMore) return;
-
+    console.log("Loading more categories...");
     setIsLoadingMore(true);
     try {
       await loadCategories();
@@ -104,7 +104,7 @@ export default function Home() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        await loadMoreCategories();
+        await loadCategories();
       } catch (error) {
         console.log("Failed to fetch categories:", error);
       } finally {
@@ -121,7 +121,7 @@ export default function Home() {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !isLoading && searchQuery.length === 0) {
-          loadCategories();
+          loadMoreCategories();
         }
       },
       { threshold: 1.0 }
