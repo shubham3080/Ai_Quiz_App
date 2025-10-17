@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -180,7 +181,7 @@ export default function LoginPage() {
 
       <div className="mt-6 text-center">
         <p className="text-gray-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <a
             href="/register"
             className="font-semibold text-blue-600 hover:text-blue-500 transition-colors"

@@ -2,13 +2,13 @@
 
 "use client"
 import React, { useEffect, useState, useRef } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import {  useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Lightbulb, Video, Mic, CheckCircle, X, Clock, HelpCircle } from 'lucide-react'
 import { use } from 'react'
 import Webcam from "react-webcam";
 
-interface QuizLandingData {
+export interface QuizLandingData {
   categoryTitle: string;
   subcategoryTitle: string;
   description: string;
@@ -68,7 +68,7 @@ export default function QuizLandingPage({params}:{params:Promise<{quizId:string}
     try {
       await navigator.mediaDevices.getUserMedia({ video: true })
       setPermissions(prev => ({ ...prev, video: true }))
-    } catch (error) {
+    } catch {
       alert('Please allow camera access to continue.')
     }
   }
@@ -85,7 +85,7 @@ export default function QuizLandingPage({params}:{params:Promise<{quizId:string}
       source.connect(analyserRef.current)
       analyzeAudio()
 
-    } catch (error) {
+    } catch {
       alert('Please allow microphone access to continue.')
     }
   }
